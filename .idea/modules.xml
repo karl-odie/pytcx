@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/pygpx.iml" filepath="$PROJECT_DIR$/.idea/pygpx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pytcx.iml" filepath="$PROJECT_DIR$/.idea/pytcx.iml" />
     </modules>
   </component>
 </project>

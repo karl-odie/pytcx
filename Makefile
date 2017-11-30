@@ -24,7 +24,7 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 lint:
-	flake8 pygpx test
+	flake8 pytcx test
 
 test:
 	py.test
@@ -33,15 +33,15 @@ test-all:
 	tox
 
 coverage:
-	coverage run --source pygpx setup.py test
+	coverage run --source pytcx setup.py test
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
 
 docs:
-	rm -f docs/pygpx.rst
+	rm -f docs/pytcx.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ pygpx
+	sphinx-apidoc -o docs/ pytcx
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	open docs/_build/html/index.html

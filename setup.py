@@ -18,27 +18,25 @@ doclink = """
 Documentation
 -------------
 
-The full documentation is at http://pygpx.rtfd.org."""
+The full documentation is at http://pytcx.rtfd.org."""
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
-    name='pygpx',
+    name='pytcx',
     version='0.1.0',
     description='GPX parsing for Python',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Karl Odie',
     author_email='karlodie@gmail.com',
-    url='https://github.com/heoga/pygpx',
-    packages=[
-        'pygpx',
-    ],
-    package_dir={'pygpx': 'pygpx'},
+    url='https://github.com/heoga/pytcx',
+    py_modules=['pytcx'],
     include_package_data=True,
     install_requires=[
+        'xmltodict',
     ],
     license='MIT',
     zip_safe=False,
-    keywords='pygpx',
+    keywords='pytcx',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

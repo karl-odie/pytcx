@@ -25,6 +25,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+.cache
 
 # Translations
 *.mo
@@ -40,3 +41,7 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+
+# PyCharm
+.idea/workspace.xml
+.idea/misc.xml
