@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "pytcx"
+version = "0.1.0"
+description = "GPX parsing for Python"
+authors = ["Karl Odie <karlodie@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/heoga/pytcx"
+keywords = ["tcx"]
+classifiers=[
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3.11',
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.11"
+xmltodict = "^0.13.0"
+
+
+[tool.poetry.group.test.dependencies]
+mypy = "^1.11.1"
+pytest = "^8.3.2"
+pre-commit = "^3.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
