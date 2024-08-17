@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime
 import itertools
+from typing import Any, Iterator
 
 import xmltodict
 
@@ -14,19 +15,18 @@ class Point:  # pylint: disable=too-few-public-methods
     """Represents a point in space-time.  Also includes TCX information such
     as heart rate and cadence."""
 
-    def __init__(self, trackpoint):
+    def __init__(self, trackpoint: dict[str, Any]):
         self.time = datetime.datetime.strptime(
             trackpoint["Time"], "%Y-%m-%dT%H:%M:%S.%fZ"
         )
-        self.latitude = float(trackpoint["Position"]["LatitudeDegrees"])
-        self.longitude = float(trackpoint["Position"]["LongitudeDegrees"])
-        self.altitude = float(trackpoint["AltitudeMeters"])
-        heart_rate = trackpoint.get("HeartRateBpm", {}).get("Value")
-        if heart_rate is None:
-            self.heart_rate = heart_rate
-        else:
+        self.latitude: float = float(trackpoint["Position"]["LatitudeDegrees"])
+        self.longitude: float = float(trackpoint["Position"]["LongitudeDegrees"])
+        self.altitude: float = float(trackpoint["AltitudeMeters"])
+        heart_rate: str | None = trackpoint.get("HeartRateBpm", {}).get("Value")
+        self.heart_rate: float | None = None
+        if heart_rate is not None:
             self.heart_rate = float(heart_rate)
-        self.cadence = float(trackpoint["Extensions"]["TPX"]["RunCadence"])
+        self.cadence: float = float(trackpoint["Extensions"]["TPX"]["RunCadence"])
 
 
 class Lap:
@@ -34,14 +34,14 @@ class Lap:
     longer activity.  Frequently around 1 km or 1 mile depending on the user's
     settings."""
 
-    def __init__(self, track):
+    def __init__(self, track: dict[str, dict[str, Any]]):
         self.points = [Point(point) for point in track["Track"]["Trackpoint"]]
 
-    def start(self):
+    def start(self) -> datetime.datetime:
         """Returns the first recorded time for the lap."""
         return self.points[0].time
 
-    def stop(self):
+    def stop(self) -> datetime.datetime:
         """Returns the last recorded time for the lap."""
         return self.points[-1].time
 
@@ -51,25 +51,25 @@ class Activity:
     laps, each with a number of points and in total records an entire
     workout."""
 
-    def __init__(self, activity):
+    def __init__(self, activity: dict[str, Any]):
         self.laps = [Lap(lap) for lap in activity["Lap"]]
         self.name = activity["Notes"]
         self.sport = activity["@Sport"]
 
-    def start(self):
+    def start(self) -> datetime.datetime:
         """Returns the first recorded time for the activity."""
         return self.laps[0].start()
 
-    def stop(self):
+    def stop(self) -> datetime.datetime:
         """Returns the last recorded time for the activity."""
         return self.laps[-1].stop()
 
-    def points(self):
+    def points(self) -> Iterator[Point]:
         """Returns an iterator with all the points for the activity."""
         return itertools.chain(*[x.points for x in self.laps])
 
 
-def parse_to_activities(text):
+def parse_to_activities(text: str) -> list[Activity]:
     """Parses the text from a TCX file into a list of activities."""
     data = xmltodict.parse(text)
     activity_data = data["TrainingCenterDatabase"]["Activities"]["Activity"]

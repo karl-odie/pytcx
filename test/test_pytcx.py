@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import datetime
 import os
+from typing import Any
 
 import xmltodict
 
@@ -15,13 +16,13 @@ with open(os.path.join(os.path.dirname(__file__), "Watergrove.tcx")) as h:
     WATERGROVE = h.read()
 
 
-def traverse(data, *args):
+def traverse(data: dict[Any, Any], *args: Any) -> Any:
     for arg in args:
         data = data[arg]
     return data
 
 
-def test_first_point():
+def test_first_point() -> None:
     data = xmltodict.parse(WATERGROVE)
     trackpoint = traverse(
         data,
@@ -43,7 +44,7 @@ def test_first_point():
     assert point.cadence == 0
 
 
-def test_point_seven():
+def test_point_seven() -> None:
     data = xmltodict.parse(WATERGROVE)
     trackpoint = traverse(
         data,
@@ -65,7 +66,7 @@ def test_point_seven():
     assert point.cadence == 80
 
 
-def test_first_lap():
+def test_first_lap() -> None:
     data = xmltodict.parse(WATERGROVE)
     lap_data = traverse(
         data,
@@ -93,7 +94,7 @@ def test_first_lap():
     assert lap.stop() == datetime.datetime(2017, 11, 25, 9, 9, 20)
 
 
-def test_activity():
+def test_activity() -> None:
     data = xmltodict.parse(WATERGROVE)
     activity_data = traverse(
         data,
@@ -118,7 +119,7 @@ def test_activity():
     assert activity.stop() == datetime.datetime(2017, 11, 25, 9, 36, 11)
 
 
-def test_parse_text():
+def test_parse_text() -> None:
     activities = pytcx.parse_to_activities(WATERGROVE)
     assert len(activities) == 1
     assert activities[0].name == "Wardle and West Littleborough Ward Running"
