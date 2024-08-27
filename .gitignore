@@ -45,3 +45,6 @@ docs/_build
 # PyCharm
 .idea/workspace.xml
 .idea/misc.xml
+
+# Poetry
+poetry.lock

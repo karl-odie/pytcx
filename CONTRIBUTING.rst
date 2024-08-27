@@ -3,7 +3,7 @@ Contributing
 ============
 
 Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given. 
+little bit helps, and credit will always be given.
 
 You can contribute in many ways:
 
@@ -36,7 +36,7 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-pytcx could always use more documentation, whether as part of the 
+pytcx could always use more documentation, whether as part of the
 official pytcx docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
@@ -55,10 +55,10 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `pytcx` for
+Ready to contribute? Here's how to set up ``pytcx`` for
 local development.
 
-1. Fork_ the `pytcx` repo on GitHub.
+1. Fork_ the ``pytcx`` repo on GitHub.
 2. Clone your fork locally::
 
     $ git clone git@github.com:your_name_here/pytcx.git
@@ -96,7 +96,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 3.6
-   Check https://travis-ci.org/heoga/pytcx 
+   Check https://travis-ci.org/heoga/pytcx
    under pull requests for active pull requests or run the ``tox`` command and
    make sure that the tests pass for all supported Python versions.
 

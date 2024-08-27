@@ -1,28 +1,35 @@
 """
 Tests for `pygpx` module.
 """
+
+from __future__ import annotations
+
 import datetime
 import os
-
-import xmltodict
+from typing import Any
+from xml.etree.ElementTree import Element, fromstring
 
 import pytcx
 
-with open(os.path.join(os.path.dirname(__file__), 'Watergrove.tcx')) as h:
+with open(os.path.join(os.path.dirname(__file__), "Watergrove.tcx")) as h:
     WATERGROVE = h.read()
 
 
-def traverse(data, *args):
+def traverse(element: Element, *args: Any) -> Any:
     for arg in args:
-        data = data[arg]
-    return data
+        element = pytcx.read_garmin_key(element, arg)
+    return element
 
 
-def test_first_point():
-    data = xmltodict.parse(WATERGROVE)
+def test_first_point() -> None:
+    data = fromstring(WATERGROVE)
     trackpoint = traverse(
-        data, 'TrainingCenterDatabase', 'Activities', 'Activity', 'Lap', 0, 'Track', 'Trackpoint',
-        0
+        data,
+        "Activities",
+        "Activity",
+        "Lap",
+        "Track",
+        "Trackpoint",
     )
     point = pytcx.Point(trackpoint)
     assert point.time == datetime.datetime(2017, 11, 25, 9, 2, 42, 1000)
@@ -33,12 +40,17 @@ def test_first_point():
     assert point.cadence == 0
 
 
-def test_point_seven():
-    data = xmltodict.parse(WATERGROVE)
+def test_point_seven() -> None:
+    data = fromstring(WATERGROVE)
     trackpoint = traverse(
-        data, 'TrainingCenterDatabase', 'Activities', 'Activity', 'Lap', 0, 'Track', 'Trackpoint',
-        7
-    )
+        data,
+        "Activities",
+        "Activity",
+        "Lap",
+        "Track",
+    ).findall(
+        "garmin:Trackpoint", pytcx._GARMIN_NAMESPACE
+    )[7]
     point = pytcx.Point(trackpoint)
     assert point.time == datetime.datetime(2017, 11, 25, 9, 3, 10)
     assert point.latitude == 53.657675329595804
@@ -48,10 +60,13 @@ def test_point_seven():
     assert point.cadence == 80
 
 
-def test_first_lap():
-    data = xmltodict.parse(WATERGROVE)
+def test_first_lap() -> None:
+    data = fromstring(WATERGROVE)
     lap_data = traverse(
-        data, 'TrainingCenterDatabase', 'Activities', 'Activity', 'Lap', 0,
+        data,
+        "Activities",
+        "Activity",
+        "Lap",
     )
     lap = pytcx.Lap(lap_data)
     assert len(lap.points) == 62
@@ -65,16 +80,18 @@ def test_first_lap():
         datetime.datetime(2017, 11, 25, 9, 3, 3),
         datetime.datetime(2017, 11, 25, 9, 3, 10),
         datetime.datetime(2017, 11, 25, 9, 3, 13),
-        datetime.datetime(2017, 11, 25, 9, 3, 14)
+        datetime.datetime(2017, 11, 25, 9, 3, 14),
     ]
     assert lap.start() == datetime.datetime(2017, 11, 25, 9, 2, 42, 1000)
     assert lap.stop() == datetime.datetime(2017, 11, 25, 9, 9, 20)
 
 
-def test_activity():
-    data = xmltodict.parse(WATERGROVE)
+def test_activity() -> None:
+    data = fromstring(WATERGROVE)
     activity_data = traverse(
-        data, 'TrainingCenterDatabase', 'Activities', 'Activity',
+        data,
+        "Activities",
+        "Activity",
     )
     activity = pytcx.Activity(activity_data)
     assert len(activity.laps) == 6
@@ -87,13 +104,13 @@ def test_activity():
         datetime.datetime(2017, 11, 25, 9, 36, 6),
     ]
     assert len(list(activity.points())) == 267
-    assert activity.name == 'Wardle and West Littleborough Ward Running'
-    assert activity.sport == 'Running'
+    assert activity.name == "Wardle and West Littleborough Ward Running"
+    assert activity.sport == "Running"
     assert activity.start() == datetime.datetime(2017, 11, 25, 9, 2, 42, 1000)
     assert activity.stop() == datetime.datetime(2017, 11, 25, 9, 36, 11)
 
 
-def test_parse_text():
+def test_parse_text() -> None:
     activities = pytcx.parse_to_activities(WATERGROVE)
     assert len(activities) == 1
-    assert activities[0].name == 'Wardle and West Littleborough Ward Running'
+    assert activities[0].name == "Wardle and West Littleborough Ward Running"
