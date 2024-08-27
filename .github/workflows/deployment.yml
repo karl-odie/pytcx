@@ -26,9 +26,9 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build & Publish
       run: |
-        poetry version ${NEW_VERSION}
+        poetry version "${NEW_VERSION}"
         poetry build -f wheel
-        poetry config pypi-token.pypi ${PYPI_TOKEN}
+        poetry config pypi-token.pypi "${PYPI_TOKEN}"
         poetry publish
       shell: bash
       env:
