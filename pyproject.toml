@@ -18,7 +18,7 @@ classifiers=[
 
 [tool.poetry.dependencies]
 python = "^3.9"
-xmltodict = "^0.13.0"
+defusedxml = "^0.7.1"
 
 
 [tool.poetry.group.test.dependencies]
@@ -26,7 +26,11 @@ mypy = "^1.11.1"
 pytest = "^8.3.2"
 pre-commit = "^3.8.0"
 types-xmltodict = "^0.13.0.3"
+types-defusedxml = "^0.7.0.20240218"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.bandit]
+exclude_dirs = ["test",]

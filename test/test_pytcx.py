@@ -7,8 +7,7 @@ from __future__ import annotations
 import datetime
 import os
 from typing import Any
-
-import xmltodict
+from xml.etree.ElementTree import Element, fromstring
 
 import pytcx
 
@@ -16,24 +15,21 @@ with open(os.path.join(os.path.dirname(__file__), "Watergrove.tcx")) as h:
     WATERGROVE = h.read()
 
 
-def traverse(data: dict[Any, Any], *args: Any) -> Any:
+def traverse(element: Element, *args: Any) -> Any:
     for arg in args:
-        data = data[arg]
-    return data
+        element = pytcx.read_garmin_key(element, arg)
+    return element
 
 
 def test_first_point() -> None:
-    data = xmltodict.parse(WATERGROVE)
+    data = fromstring(WATERGROVE)
     trackpoint = traverse(
         data,
-        "TrainingCenterDatabase",
         "Activities",
         "Activity",
         "Lap",
-        0,
         "Track",
         "Trackpoint",
-        0,
     )
     point = pytcx.Point(trackpoint)
     assert point.time == datetime.datetime(2017, 11, 25, 9, 2, 42, 1000)
@@ -45,18 +41,16 @@ def test_first_point() -> None:
 
 
 def test_point_seven() -> None:
-    data = xmltodict.parse(WATERGROVE)
+    data = fromstring(WATERGROVE)
     trackpoint = traverse(
         data,
-        "TrainingCenterDatabase",
         "Activities",
         "Activity",
         "Lap",
-        0,
         "Track",
-        "Trackpoint",
-        7,
-    )
+    ).findall(
+        "garmin:Trackpoint", pytcx._GARMIN_NAMESPACE
+    )[7]
     point = pytcx.Point(trackpoint)
     assert point.time == datetime.datetime(2017, 11, 25, 9, 3, 10)
     assert point.latitude == 53.657675329595804
@@ -67,14 +61,12 @@ def test_point_seven() -> None:
 
 
 def test_first_lap() -> None:
-    data = xmltodict.parse(WATERGROVE)
+    data = fromstring(WATERGROVE)
     lap_data = traverse(
         data,
-        "TrainingCenterDatabase",
         "Activities",
         "Activity",
         "Lap",
-        0,
     )
     lap = pytcx.Lap(lap_data)
     assert len(lap.points) == 62
@@ -95,10 +87,9 @@ def test_first_lap() -> None:
 
 
 def test_activity() -> None:
-    data = xmltodict.parse(WATERGROVE)
+    data = fromstring(WATERGROVE)
     activity_data = traverse(
         data,
-        "TrainingCenterDatabase",
         "Activities",
         "Activity",
     )
