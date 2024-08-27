@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytcx"
-version = "0.1.0"
+version = "0.0.0"
 description = "GPX parsing for Python"
 authors = ["Karl Odie <karlodie@gmail.com>"]
 readme = "README.md"

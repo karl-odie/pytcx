@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime
 import itertools
+from importlib.metadata import version
 from typing import TYPE_CHECKING, Iterator
 
 from defusedxml import ElementTree
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     # Used for typing, defusedxml used for code.
     from xml.etree.ElementTree import Element  # nosec: B405
 
-__version__ = "0.1.0"
+__version__ = version("pytcx")
 
 _GARMIN_NAMESPACE = {
     "garmin": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2",

@@ -28,7 +28,9 @@ jobs:
       run: |
         poetry version ${NEW_VERSION}
         poetry build -f wheel
+        poetry config pypi-token.pypi ${PYPI_TOKEN}
         poetry publish
       shell: bash
       env:
         NEW_VERSION: ${{ steps.tag_version.outputs.new_version }}
+        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
