@@ -34,3 +34,11 @@ jobs:
       env:
         NEW_VERSION: ${{ steps.tag_version.outputs.new_version }}
         PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          dist/pytcx-*.whl
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        fail_on_unmatched_files: true
+        make_latest: true
