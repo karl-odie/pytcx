@@ -144,9 +144,9 @@ class Lap:
 
     def __init__(self, element: Element):
         self.total_time = read_tcx_key_float_required(element, "TotalTimeSeconds")
-        self.distance = read_tcx_key_float_required(element, "DistanceMeters")
         self.calories = read_tcx_key_float_required(element, "Calories")
 
+        self.distance = read_tcx_key_float_optional(element, "DistanceMeters")
         self.max_speed = read_tcx_key_float_optional(element, "MaximumSpeed")
         self.average_heart_rate = read_tcx_key_float_optional(
             element, "AverageHeartRateBpm", "Value"
@@ -159,7 +159,14 @@ class Lap:
 
         track = read_tcx_key_required(element, "Track")
         trackpoints = track.findall("garmin:Trackpoint", _GARMIN_NAMESPACE)
-        self.points = [Point(point) for point in trackpoints]
+        self.points: list[Point] = []
+        for point in trackpoints:
+            try:
+                self.points.append(Point(point))
+            except TCXParseException:
+                continue
+        if not self.points:
+            raise TCXParseException("No valid Trackpoint in Track")
 
         self.average_speed: float | None = None
         self.max_cadence: float | None = None
@@ -219,7 +226,14 @@ class Activity:
         laps = activity.findall("garmin:Lap", _GARMIN_NAMESPACE)
         self.name = read_tcx_key_text_optional(activity, "Notes")
         self.sport = activity.attrib["Sport"]
-        self.laps = [Lap(lap) for lap in laps]
+        self.laps: list[Lap] = []
+        for lap in laps:
+            try:
+                self.laps.append(Lap(lap))
+            except TCXParseException:
+                continue
+        if not self.laps:
+            raise TCXParseException("No valid Lap in Activity")
         if self.name is None:
             self.name = f"{self.sport} - {self.time.isoformat()}"
 

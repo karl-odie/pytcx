@@ -48,3 +48,6 @@ docs/_build
 
 # Poetry
 poetry.lock
+
+# Testing
+local_testing.py
