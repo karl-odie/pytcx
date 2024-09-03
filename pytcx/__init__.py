@@ -59,7 +59,10 @@ def read_tcx_key_text_optional(
     text = child.text
     if text is None:
         return None
-    return text
+    stripped = text.strip()
+    if not stripped:
+        return None
+    return stripped
 
 
 def read_tcx_key_float_required(
@@ -91,7 +94,7 @@ class Point:  # pylint: disable=too-few-public-methods
         # Time & position (lat, lon, alt are compulsory).
         self.time = datetime.datetime.strptime(
             read_tcx_key_text_required(element, "Time"), "%Y-%m-%dT%H:%M:%S.%fZ"
-        ).astimezone(datetime.UTC)
+        ).astimezone(datetime.timezone.utc)
         self.latitude: float = read_tcx_key_float_required(
             element, "Position", "LatitudeDegrees"
         )
@@ -222,7 +225,7 @@ class Activity:
     def __init__(self, activity: Element):
         self.time = datetime.datetime.strptime(
             read_tcx_key_text_required(activity, "Id"), "%Y-%m-%dT%H:%M:%S.%fZ"
-        ).astimezone(datetime.UTC)
+        ).astimezone(datetime.timezone.utc)
         laps = activity.findall("garmin:Lap", _GARMIN_NAMESPACE)
         self.name = read_tcx_key_text_optional(activity, "Notes")
         self.sport = activity.attrib["Sport"]
@@ -235,7 +238,7 @@ class Activity:
         if not self.laps:
             raise TCXParseException("No valid Lap in Activity")
         if self.name is None:
-            self.name = f"{self.sport} - {self.time.isoformat()}"
+            self.name = f"{self.sport}"
 
     def start(self) -> datetime.datetime:
         """Returns the first recorded time for the activity."""
