@@ -59,7 +59,10 @@ def read_tcx_key_text_optional(
     text = child.text
     if text is None:
         return None
-    return text
+    stripped = text.strip()
+    if not stripped:
+        return None
+    return stripped
 
 
 def read_tcx_key_float_required(
@@ -235,7 +238,7 @@ class Activity:
         if not self.laps:
             raise TCXParseException("No valid Lap in Activity")
         if self.name is None:
-            self.name = f"{self.sport} - {self.time.isoformat()}"
+            self.name = f"{self.sport}"
 
     def start(self) -> datetime.datetime:
         """Returns the first recorded time for the activity."""
